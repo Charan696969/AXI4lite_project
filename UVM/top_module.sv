@@ -1,9 +1,8 @@
 `timescale 1ns/1ns
-
-import uvm_pkg::*;
+//include the required packages
 `include "uvm_macros.svh"
-
-
+import uvm_pkg::*;
+//include files
 `include "interface.sv"
 `include "sequence_item.sv"
 `include "sequence.sv"
@@ -12,58 +11,35 @@ import uvm_pkg::*;
 `include "monitor.sv"
 `include "agent.sv"
 `include "scoreboard.sv"
-`include "environment.sv"
+`include "env.sv"
 `include "test.sv"
-
-
+//top module
 module top;
-  
-  logic clock;
-  
-  axi4lite_interface intf(.aclk(clock));
-  
-  axi4lite dut (
-    .AW(intg.aw),
-    .W(intf.w),
-    .AR(intf.ar),
-    .AWVALID(intf.awvalid),
-    .WVALID(intf.wvalid),
-    .BREADY(intf.bready),
-    .ARVALID(intf.arvalid),
-    .RREADY(intf.rready),
-    .ARESETN(intf.aresetn),
-    .ACLK(intf.aclk),
-    .AWREADY(intf.awready),
-    .WREADY(intf.wready),
-    .BVALID(intf.bvalid),
-    .ARREADY(intf.arready),
-    .RVALID(intf.rvalid),
-    .B(intf.b),
-    .R(intf.r)
+  logic ACLK,ARESETN;
+  //instantiate interface
+  axi4lite_interface intf(.ACLK(ACLK), .ARESETN(ARESETN));
+  //instantiate dut
+  axi4lite DUT (
+    .AW(intf.AW), .W(intf.W), .AR(intf.AR),
+    .AWVALID(intf.AWVALID), .WVALID(intf.WVALID), .BREADY(intf.BREADY),
+    .ARVALID(intf.ARVALID), .RREADY(intf.RREADY),
+    .ARESETN(intf.ARESETN), .ACLK(intf.ACLK),
+    .AWREADY(intf.AWREADY), .WREADY(intf.WREADY), .BVALID(intf.BVALID),
+    .ARREADY(intf.ARREADY), .RVALID(intf.RVALID), .B(intf.B), .R(intf.R)
   );
-  
+
+  //clocking and reset
   initial begin
-    uvm_config_db #(virtual axi4lite_interface)::set(null, "*", "vif", intf);
+    ACLK = 0;
+    ARESETN = 1'b0; 
+
+    fork
+      forever #5 ACLK = ~ACLK; 
+      #50ns; 
+      ARESETN = 1'b1;
+    join_none 
+    uvm_config_db#(virtual axi4lite_interface)::set(null,"*","vif",intf);
+    run_test("axi4lite_test");
   end
   
-  initial begin
-    run_test();
-  end
-  
-  initial begin
-    clock = 0;
-    forever #5 clock = ~clock;
-  end
-  
-  initial begin
-    #10000;
-    $display("End of clock cycles!");
-    $finish;
-  end
-  
-  initial begin
-    $dumpfile("output.vcd");
-    $dumpvars(0,top);
-  end
-  
-endmodule: top
+endmodule
