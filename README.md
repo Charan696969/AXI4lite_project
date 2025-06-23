@@ -1,6 +1,8 @@
 <p align="center">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/SystemVerilog_logo.svg/1280px-SystemVerilog_logo.svg.png" alt="SystemVerilog Logo" height="120"/>
-  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/UVM_logo.png/600px-UVM_logo.png" alt="UVM Logo" height="120"/>
+  <img src="https://raw.githubusercontent.com/hdlbits/hdlbits.github.io/main/assets/images/systemverilog-logo.png" alt="SystemVerilog Logo" height="100"/>
+
+  <img src="https://raw.githubusercontent.com/uvmcookbook/uvmcookbook.github.io/main/images/uvm_logo.png" alt="UVM Logo" height="100"/>
+
   <br>
   <h1 align="center">AXI4-Lite UVM Verification Project</h1>
   <p align="center">📦 A complete UVM testbench to verify a custom AXI4-Lite slave design</p>
