@@ -1,31 +1,29 @@
+//component class - env
 class axi4lite_env extends uvm_env;
+  //register to factory
   `uvm_component_utils(axi4lite_env)
-  
-  axi4lite_agent agnt;
-  
-  function new(string name = "axi4lite_env", uvm_component parent);
+  //instantaitions
+  axi4lite_agent agent;
+  axi4lite_scoreboard sb;
+
+  //constructor
+  function new(string name, uvm_component parent);
     super.new(name, parent);
-    `uvm_info("ENV_CLASS","Inside axi4lite_env constructor!", UVM_HIGH)
-  endfunction: new
-  
+    `uvm_info("ENV_CLASS","Constructor called!", UVM_MEDIUM)
+  endfunction
+
+  //build phase
   function void build_phase(uvm_phase phase);
     super.build_phase(phase);
-    `uvm_info("ENV_CLASS","Inside axi4lite_env build_phase!", UVM_HIGH)
-    
-    agnt = axi4lite_agent::type_id::create("agnt", this);
-    
-  endfunction: build_phase
-  
+    agent = axi4lite_agent::type_id::create("agent", this);
+    sb = axi4lite_scoreboard::type_id::create("sb", this);
+    `uvm_info("ENV_CLASS","Build Phase called!", UVM_MEDIUM)
+  endfunction
+
+  //connect phase
   function void connect_phase(uvm_phase phase);
-     super.connect_phase(phase);
-    `uvm_info("ENV_CLASS","Inside axi4lite_env connect_phase!", UVM_HIGH)
-  endfunction: connect_phase
-  
-  task run_phase(uvm_phase phase);
-    super.run_phase(phase);
-    
-    //Fill with logic later
-    
-  endtask: run_phase
-  
-endclass: axi4lite_env
+    super.connect_phase(phase);
+    agent.mon.item_collected_port.connect(sb.item_collected_export);
+    `uvm_info("ENV_CLASS","Connect Phase called!",UVM_MEDIUM);
+  endfunction
+endclass
