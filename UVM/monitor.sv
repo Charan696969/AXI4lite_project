@@ -1,31 +1,52 @@
+//component class - monitor
 class axi4lite_monitor extends uvm_monitor;
+  //register to factory
   `uvm_component_utils(axi4lite_monitor)
   
-  virtual axi4lite_interface vif;
-  
-  function new(string name = "axi4lite_monitor", uvm_component parent);
+  //instantiations
+  virtual axi4lite_interface intf;
+  uvm_analysis_port #(axi4lite_seq_item) item_collected_port;
+
+  //constructor
+  function new(string name, uvm_component parent);
     super.new(name, parent);
-    `uvm_info("MONITOR_CLASS","Inside axi4lite_monitor constructor!", UVM_HIGH)
-  endfunction: new
-  
+    item_collected_port = new("item_collected_port", this);
+    `uvm_info("MONITOR_CLASS","Constructor called!", UVM_MEDIUM)
+  endfunction
+
+  //build phase
   function void build_phase(uvm_phase phase);
     super.build_phase(phase);
-    `uvm_info("MONITOR_CLASS","Inside axi4lite_monitor build_phase!", UVM_HIGH)
-    if(!(uvm_config_db #(virtual axi4lite_interface)::get(this, "*", "vif", vif))) begin
-      `uvm_error("MONITOR_CLASS","Failed to get vif from config_db!");
-    end
-  endfunction: build_phase
-  
-  function void connect_phase(uvm_phase phase);
-     super.connect_phase(phase);
-    `uvm_info("TEST_MONITOR","Inside axi4lite_monitor connect_phase!", UVM_HIGH)
-  endfunction: connect_phase
-  
+    `uvm_info("MONITOR_CLASS","Build Phase called!", UVM_MEDIUM)
+    if (!uvm_config_db#(virtual axi4lite_interface)::get(this, "", "vif", intf))
+      `uvm_fatal("NO_VIF", "Virtual interface not found")
+  endfunction
+
+  //run phase
   task run_phase(uvm_phase phase);
-    super.run_phase(phase);
-    
-    //Fill with logic later
-    
-  endtask: run_phase
-  
-endclass: axi4lite_monitor
+    `uvm_info("MONITOR_CLASS","Run Phase called!", UVM_MEDIUM)
+    forever begin //used to read data from the virtual interface, and drive the transcation output
+      axi4lite_seq_item tx = axi4lite_seq_item::type_id::create("tx");
+      @(posedge intf.ACLK);
+
+      if (intf.AWVALID && intf.AWREADY && intf.WVALID && intf.WREADY) begin
+        tx.is_write = 1;
+        tx.addr     = intf.AW[9:0];
+        tx.prot     = intf.AW[12:10];
+        tx.wdata    = intf.W[31:0];
+        tx.wstrb    = intf.W[35:32];
+        wait (intf.BVALID);
+        tx.resp = intf.B;
+        item_collected_port.write(tx);
+      end else if (intf.ARVALID && intf.ARREADY) begin
+        tx.is_write = 0;
+        tx.addr     = intf.AR[9:0];
+        tx.prot     = intf.AR[12:10];
+        wait (intf.RVALID);
+        tx.rdata = intf.R[31:0];
+        tx.resp  = intf.R[33:32];
+        item_collected_port.write(tx);
+      end
+    end
+  endtask
+endclass
