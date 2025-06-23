@@ -26,12 +26,12 @@ module axi4lite(
   logic [9:0] write_address_latch;
   logic [31:0] memory [0:1023];
 
-  logic write_address_active; 
-  logic write_data_active;
-  logic write_transfer_complete;
+  logic write_address_active; //indicates active AW
+  logic write_data_active; //indicates active WDATA
+  logic write_transfer_complete; //indicates handshake(write)
 
-  logic read_address_active;
-  logic read_data_transfer_complete; 
+  logic read_address_active; //indicates active AR
+  logic read_data_transfer_complete; //indicates handshake(read)
 
   logic [31:0] RDATA_reg;
   logic [1:0]  RRESP_reg, BRESP_reg;
@@ -39,6 +39,7 @@ module axi4lite(
   assign R = {RRESP_reg, RDATA_reg}; 
   assign B = BRESP_reg;             
 
+  //For a simple memory module - the memory is always ready to accept the incoming inputs - thus helping us simplify the logic to only checking "VALID" inputs.
   assign AWREADY = 1'b1; 
   assign WREADY  = 1'b1;
   assign ARREADY = 1'b1;
