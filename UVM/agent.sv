@@ -1,30 +1,32 @@
+//component class - agent
 class axi4lite_agent extends uvm_agent;
+  //register to factory
   `uvm_component_utils(axi4lite_agent)
   
+  //instantiations
   axi4lite_driver drv;
   axi4lite_monitor mon;
   axi4lite_sequencer seqr;
-  
-  function new(string name = "axi4lite_agent", uvm_component parent);
+
+  //constructor
+  function new(string name, uvm_component parent);
     super.new(name, parent);
-    `uvm_info("AGENT_CLASS","Inside axi4lite_agent constructor!", UVM_HIGH)
-  endfunction: new
-  
+    `uvm_info("AGENT_CLASS","Constructor called!", UVM_MEDIUM)
+  endfunction
+
+  //build phase
   function void build_phase(uvm_phase phase);
     super.build_phase(phase);
-    `uvm_info("AGENT_CLASS","Inside axi4lite_agent build_phase!", UVM_HIGH)
-  endfunction: build_phase
-  
+    drv  = axi4lite_driver::type_id::create("drv", this);
+    mon  = axi4lite_monitor::type_id::create("mon", this);
+    seqr = axi4lite_sequencer::type_id::create("seqr", this);
+    `uvm_info("AGENT_CLASS","Build Phase called!", UVM_MEDIUM)
+  endfunction
+
+  //connect phase
   function void connect_phase(uvm_phase phase);
-     super.connect_phase(phase);
-    `uvm_info("AGENT_CLASS","Inside axi4lite_agent connect_phase!", UVM_HIGH)
-  endfunction: connect_phase 
-  
-  task run_phase(uvm_phase phase);
-    super.run_phase(phase);
-    
-    //Fill with logic later
-    
-  endtask: run_phase
-  
-endclass: axi4lite_agent
+    super.connect_phase(phase);
+    drv.seq_item_port.connect(seqr.seq_item_export);
+    `uvm_info("AGENT_CLASS","Connect Phase called!", UVM_MEDIUM)
+  endfunction
+endclass
