@@ -1,32 +1,44 @@
-<div align="center">
-
-# 🔍 AXI4-Lite UVM Verification Testbench  
-### ✅ Full SystemVerilog + UVM-based Verification Environment
-
-<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/AXI_logo.svg/320px-AXI_logo.svg.png" width="160"/>&nbsp;&nbsp;&nbsp;
-<img src="https://upload.wikimedia.org/wikipedia/commons/4/4f/Universal_Verification_Methodology_logo.svg" width="180"/>
-
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Language](https://img.shields.io/badge/SystemVerilog-IEEE%201800--2017-blue.svg)
-![UVM](https://img.shields.io/badge/UVM-1.2-green.svg)
-![Status](https://img.shields.io/badge/project-DONE-green)
-
-</div>
+<p align="center">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/SystemVerilog_logo.svg/1280px-SystemVerilog_logo.svg.png" alt="SystemVerilog Logo" height="120"/>
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/UVM_logo.png/600px-UVM_logo.png" alt="UVM Logo" height="120"/>
+  <br>
+  <h1 align="center">AXI4-Lite UVM Verification Project</h1>
+  <p align="center">📦 A complete UVM testbench to verify a custom AXI4-Lite slave design</p>
+</p>
 
 ---
 
-## 📦 Overview
-
-This project implements a **complete UVM testbench** to verify a custom **AXI4-Lite Slave** design.  
-The verification environment is modular, scalable, and fully reusable — adhering to **Universal Verification Methodology (UVM)** standards.
+<p align="center">
+  <img alt="Language" src="https://img.shields.io/badge/SystemVerilog-2017-orange.svg?logo=verilog">
+  <img alt="License" src="https://img.shields.io/badge/license-MIT-green.svg">
+  <img alt="UVM" src="https://img.shields.io/badge/UVM-1.2-blue.svg">
+  <img alt="Build" src="https://img.shields.io/badge/simulated-on--vcs-success.svg">
+</p>
 
 ---
 
-## 📋 AXI4-Lite DUT Summary
+## 📁 Project Overview
 
-The Design Under Test is a 32-bit AXI4-Lite Slave that supports:
+This project showcases the functional verification of a custom **AXI4-Lite slave** using **UVM (Universal Verification Methodology)**. The DUT supports AXI-compliant read/write transactions with full byte-level `WSTRB` support, internal memory, and response signaling.
 
-- 10-bit address support (1024-word memory)
-- 32-bit write/read data
-- Write strobes (`WSTRB`)
-- Independent valid/ready handshake logic for AW, W, B, AR, and R channel.
+---
+
+## 🏗️ Directory Structure
+
+```text
+AXI4lite_project/
+└── axi4lite_design.sv                # AXI4-Lite Slave DUT
+└── axi4lite_sample_log.md            # Simulated log from EDAplayground's Synopsys VCS Tool 
+├── UVM/
+│   ├── axi4lite_interface.sv     # Virtual interface
+│   ├── axi4lite_seq_item.sv      # Transaction object
+│   ├── axi4lite_sequence.sv      # Generates sequences
+│   ├── axi4lite_sequencer.sv     # Controls item flow
+│   ├── axi4lite_driver.sv        # Drives DUT signals
+│   ├── axi4lite_monitor.sv       # Monitors bus
+│   ├── axi4lite_agent.sv         # Bundles sequencer/driver/monitor
+│   ├── axi4lite_scoreboard.sv    # Checks correctness
+│   ├── axi4lite_env.sv           # Testbench environment
+|   ├── axi4lite_test.sv          # Test Class
+│   └── top.sv                    # Top testbench wrapper
+└── README.md                     # You're here!
