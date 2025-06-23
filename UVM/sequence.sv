@@ -1,50 +1,26 @@
-//Object class - sequence
+//object class - sequence
+class axi4lite_sequence extends uvm_sequence#(axi4lite_seq_item);
+  //register to factory
+  `uvm_object_utils(axi4lite_sequence)
 
-class axi4lite_base_sequence extends uvm_sequence;
-  `uvm_object_utils(axi4lite_base_sequence)
   
-  axi4lite_sequence_item reset_pkt;
-  
-  function new(string name = "axi4lite_base_sequence");
+  //constructor
+  function new(string name = "axi4lite_sequence");
     super.new(name);
-    `uvm_info("BASE_SEQUENCE", "Inside axi4lite_base_sequence constructor!",UVM_HIGH);
-    
-  endfunction: new
-  
+    `uvm_info("SEQUENCE_CLASS","Constructor called!", UVM_MEDIUM)
+  endfunction
+
+  //sequence
   task body();
-    `uvm_info("BASE_SEQUENCE", "Inside body task!",UVM_HIGH)
-    
-    reset_pkt = axi4lite_sequence_item::type_id::create("reset_pkt");
-    start_item(reset_pkt);
-    reset_pkt(randomize() with aresetn = 0);
-    finish_item(reset_pkt);
-    
-    
-  endtask: body
-  
-  
-endclass: axi4lite_base_sequence
+    `uvm_info("SEQUENCE_CLASS","Initiating seqeunce!", UVM_MEDIUM)
+    repeat (10) begin //repeat(n) indicates number of sequence items generated
+      axi4lite_seq_item tx;
 
-
-class axi4lite_test_sequence extends axi4lite_base_sequence;
-  `uvm_object_utils(axi4lite_test_sequence)
-  
-  axi4lite_sequence_item item;
-  
-  function new(string name = "axi4lite_test_sequence");
-    super.new(name);
-    `uvm_info("TEST_SEQUENCE", "Inside axi4lite_test_sequence constructor!",UVM_HIGH);
-    
-  endfunction: new
-  
-  task body();
-    `uvm_info("TEST_SEQUENCE", "Inside body task!",UVM_HIGH)
-    
-    item = axi4lite_sequence_item::type_id::create("item");
-    start_item(item);
-    item(randomize() with aresetn = 1);
-    finish_item(item);
-
-  endtask: body
-  
-endclass: axi4lite_test_sequence
+      tx = axi4lite_seq_item::type_id::create("tx");
+      assert(tx.randomize()); //randomizing inputs
+      start_item(tx);
+      finish_item(tx);
+    end
+    `uvm_info("SEQUENCE_CLASS","Sequence body done!",UVM_MEDIUM)
+  endtask
+endclass
