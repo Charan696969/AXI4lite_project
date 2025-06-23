@@ -1,7 +1,7 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/hdlbits/hdlbits.github.io/main/assets/images/systemverilog-logo.png" alt="SystemVerilog Logo" height="100"/>
 
-  <img src="https://raw.githubusercontent.com/uvmcookbook/uvmcookbook.github.io/main/images/uvm_logo.png" alt="UVM Logo" height="100"/>
+  <img src="https://raw.githubusercontent.com/hdlbits/hdlbits.github.io/main/assets/images/systemverilog-logo.png" height="100"/>
+  <img src="https://raw.githubusercontent.com/uvmcookbook/uvmcookbook.github.io/main/images/uvm_logo.png" height="100"/>
 
   <br>
   <h1 align="center">AXI4-Lite UVM Verification Project</h1>
